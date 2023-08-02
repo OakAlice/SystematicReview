@@ -7,6 +7,11 @@ import pandas as pd
 from bs4 import BeautifulSoup
 import re
 from time import sleep
+import os
+
+# where you want the search results to save to
+output_directory = "C:/Users/oakle/OneDrive/Documents/Systematic Results"
+os.makedirs(output_directory, exist_ok=True)
 
 # my stuff
 from StringsToUrl import all_urls
@@ -119,7 +124,7 @@ for url in all_urls:
         # use sleep to avoid status code 429
         sleep(30)
 
-    csv_file_name = f'google_scholar_results_{i + 1}.csv'
+    csv_file_name = os.path.join(output_directory, f'results_{i + 1}.csv')
     print(csv_file_name)
     final.to_csv(csv_file_name, index=False)
     i+=1
