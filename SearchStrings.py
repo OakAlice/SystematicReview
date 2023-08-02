@@ -2,7 +2,7 @@
 from itertools import product
 
 # search terms I want to use, seperated into rows by synonyms
-A1 = ['accelerometer']
+A1 = ['accelerometer'] 
 A2 = ['activity classification', 'behaviour classification', 'activity recognition']
 A3 = ['machine learning', 'classification algorithm']
 B = ['wildlife', 'animal']

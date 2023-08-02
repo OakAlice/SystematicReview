@@ -5,7 +5,7 @@ from SearchStrings import search_strings
 base_url = "https://scholar.google.com/scholar?q=words+here+&hl=en&as_sdt=0%2C5&as_ylo=2013&as_yhi=2023"
 
 # empty space for the urls
-all_urls = []
+all_urls = [] 
 
 # Iterate over each set of search strings
 for search_set in search_strings:
