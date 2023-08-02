@@ -75,28 +75,28 @@ def get_author_year_publi_info(author_tag):
 
 # adding information in repository
 def add_in_paper_repo(papername, year, author, publi, link, url_column):
-    paper_repos_dict['Paper Title'].extend(papername)
+    paper_repos_dict['Title'].extend(papername)
     paper_repos_dict['Year'].extend(year)
     paper_repos_dict['Author'].extend(author)
     paper_repos_dict['Publication'].extend(publi)
-    paper_repos_dict['Url of paper'].extend(link)
-    paper_repos_dict['Source url'].extend(url_column)
+    paper_repos_dict['Url'].extend(link)
+    paper_repos_dict['Source'].extend(url_column)
     return pd.DataFrame(paper_repos_dict)
 
 i = 0
 for url in all_urls:
     # creating final repository
     paper_repos_dict = {
-        'Paper Title': [],
+        'Title': [],
         'Year': [],
         'Author': [],
         'Publication': [],
-        'Url of paper': [],
-        'Source url': [] 
+        'Url': [],
+        'Source': [] 
     }
 
     # Loop through the Google Scholar search results in sets of 10 (e.g., 0 to 9, 10 to 19, etc.).
-    for j in range(0, 30, 10):
+    for j in range(0, 10, 10):
         # get url for each page
         this_url = url.format(i)
 
