@@ -43,13 +43,27 @@ def get_keywords_from_url(url):
     if keywords_match:
         keywords = keywords_match.group(1)
         keywords = keywords.replace('+', ' ')
-        keywords = keywords.replace('%20', ' ')
+        keywords = keywords.replace('%20', '_') # underscore it so it stays 1 word
         return keywords
     else:
         return None
 
 # update the 'Keywords' column
 combined_df['Keywords'] = combined_df['Source'].apply(get_keywords_from_url)
+
+# split the keywords into constituent parts 
+# new column for each of the unique keywords
+all_keywords = set(combined_df['Keywords'].str.split().sum())
+for keyword in all_keywords:
+    combined_df[keyword] = 0
+# put a 1 in the column when that word appeared in the string
+for keyword in all_keywords:
+    combined_df.loc[combined_df['Keywords'].str.contains(keyword), keyword] = 1
+# remove the keywords column
+combined_df.drop('Keywords', axis=1, inplace=True)
+
+# remove duplicates
+combined_df = combined_df.drop_duplicates(subset=['Title'])
 
 # print to csv
 csv_file_name = os.path.join(folder_path, 'collated.csv')

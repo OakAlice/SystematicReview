@@ -1,4 +1,4 @@
-## Searching the databases with the search strings
+## Searching google scholar with the search strings
 # instructions from @nandinisaini021 on medium
 
 # packages
@@ -35,6 +35,22 @@ def get_paperinfo(paper_url):
     paper_doc = BeautifulSoup(response.text, 'html.parser')
 
     return paper_doc
+
+def get_citation_count(paper_url):
+    response = requests.get(paper_url, headers=headers)
+    if response.status_code != 200:
+        print('Status code:', response.status_code)
+        raise Exception('Failed to fetch web page')
+
+    paper_doc = BeautifulSoup(response.text, 'html.parser')
+    
+    citation_tag = paper_doc.select_one('.gs_citi')
+    if citation_tag:
+        citation_text = citation_tag.text
+        citation_count = int(re.search(r'\d+', citation_text).group()) if re.search(r'\d+', citation_text) else 0
+        return citation_count
+    else:
+        return 0
 
 # extracting the papers' tags
 def get_tags(doc):
@@ -92,11 +108,12 @@ for url in all_urls:
         'Author': [],
         'Publication': [],
         'Url': [],
-        'Source': [] 
+        'Source': [],
+        'Citations': []
     }
 
     # Loop through the Google Scholar search results in sets of 10 (e.g., 0 to 9, 10 to 19, etc.).
-    for j in range(0, 10, 10):
+    for j in range(0, 1000, 10): # get the first 1000 papers
         # get url for each page
         this_url = url.format(i)
 
@@ -118,13 +135,19 @@ for url in all_urls:
         # add the source URL
         url_column = [this_url] * len(papername)
 
+        # get the number of citations
+        citation_counts = [get_citation_count(link) for link in link]
+
         # add in paper repo dict
         final = add_in_paper_repo(papername, year, author, publication, link, url_column)
+        
+        # add the citation counts to the DataFrame
+        final['Citations'] = citation_counts
 
         # use sleep to avoid status code 429
-        sleep(30)
+        sleep(3)
 
     csv_file_name = os.path.join(output_directory, f'results_{i + 1}.csv')
     print(csv_file_name)
     final.to_csv(csv_file_name, index=False)
-    i+=1
+    i += 1
