@@ -22,19 +22,10 @@ for filename in os.listdir(folder_path):
 combined_df = pd.concat(dataframes_list, ignore_index=True)
 
 # Apply some column transformations
-combined_df['Database'] = None # add which database it came from
-combined_df['Keywords'] = None # the original search string used to find these papers
+combined_df['Database'] = 'Scholar' # add which database it came from
 
-# check for 'scholar' or 'scopus' in the 'Source' column
-def get_database(Source):
-    if 'scholar' in Source.lower():
-        return 'Scholar'
-    elif 'scopus' in Source.lower():
-        return 'Scopus'
-    else:
-        return None
-# update the 'Database' column
-combined_df['Database'] = combined_df['Source'].apply(get_database)
+# initialise this list
+combined_df['Keywords'] = None # the original search string used to find these papers
 
 # now find the search terms that were used to find the citation
 def get_keywords_from_url(url):
@@ -66,5 +57,5 @@ combined_df.drop('Keywords', axis=1, inplace=True)
 combined_df = combined_df.drop_duplicates(subset=['Title'])
 
 # print to csv
-csv_file_name = os.path.join(folder_path, 'collated.csv')
+csv_file_name = os.path.join(folder_path, 'Scholar_collated.csv')
 combined_df.to_csv(csv_file_name, index=False)

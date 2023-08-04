@@ -14,7 +14,7 @@ output_directory = "C:/Users/oakle/OneDrive/Documents/Systematic Results"
 os.makedirs(output_directory, exist_ok=True)
 
 # my stuff
-from StringsToUrl import all_urls
+from ScholarStringsToUrl import all_urls
 
 # required to allow us to access the page
 headers = {
