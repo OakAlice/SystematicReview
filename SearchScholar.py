@@ -10,7 +10,7 @@ from time import sleep
 import os
 
 # where you want the search results to save to
-output_directory = "C:/Users/oakle/OneDrive/Documents/Systematic Results"
+output_directory = "C:/Users/oakle/OneDrive/Documents/Systematic Results/Scholar"
 os.makedirs(output_directory, exist_ok=True)
 
 # my stuff
