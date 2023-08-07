@@ -1,16 +1,13 @@
 ## Searching PubMed for even more citations yay
 # tutorial from https://marcobonzanini.com/2015/01/12/searching-pubmed-with-python/
 
-
-# pip install biopython
 import pandas as pd
 from SearchStrings import search_strings
 import time
 from Bio import Entrez
 from requests.exceptions import HTTPError
-
-# where you want to save the files
-output_directory = "C:/Users/oakle/OneDrive/Documents/Systematic Results/PubMED"
+from SearchStrings import output_directory
+from SearchStrings import PubMed_num_of_articles
 
 # Set email (required by NCBI API)
 Entrez.email = 'oaw001@student.usc.edu.au'
@@ -45,7 +42,7 @@ def fetch_details(id_list):
 
 if __name__ == '__main__':
     search_queries = [' AND '.join(words) for words in search_strings]
-    num_of_articles = 1000
+    num_of_articles = PubMed_num_of_articles
 
     all_papers = []
     i = 0
@@ -76,7 +73,7 @@ if __name__ == '__main__':
 
                 if all_papers:
                     df = pd.DataFrame(all_papers)
-                    filename = f'{output_directory}/PubMed_results_{i}.csv'
+                    filename = f'{output_directory}/PubMED/PubMed_results_{i}.csv'
                     df.to_csv(filename, index=False)  # Save DataFrame to CSV file
                     print(f"Results for '{query}' saved to '{filename}'")
                 else:

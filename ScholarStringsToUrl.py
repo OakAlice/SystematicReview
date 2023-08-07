@@ -15,14 +15,7 @@ for search_set in search_strings:
     # Replace "words+here" in the base URL with the replacement for scholar_base
     url_scholar = scholar_base.replace("words+here", replacement_scholar)
 
-    # Join the words in the set with '%2C+' for scopus_base
-    replacement_scopus  = "%2C+".join(search_set)
-    replacement_scopus = replacement_scopus.replace(' ', '%2C+')
-    # Replace "words%2C+here" in base URL with the replacement for scopus_base
-    url_scopus = scopus_base.replace("words%2C+here", replacement_scopus)
-
     # Append both scholar_base and scopus_base URLs into the list
     all_urls.append(url_scholar)
-    #all_urls.append(url_scopus)
 
 print(all_urls)

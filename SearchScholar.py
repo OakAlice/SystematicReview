@@ -8,10 +8,8 @@ from bs4 import BeautifulSoup
 import re
 from time import sleep
 import os
-
-# where you want the search results to save to
-output_directory = "C:/Users/oakle/OneDrive/Documents/Systematic Results/Scholar"
-os.makedirs(output_directory, exist_ok=True)
+from SearchStrings import output_directory
+from SearchStrings import Scholar_num_of_articles
 
 # my stuff
 from ScholarStringsToUrl import all_urls
@@ -113,7 +111,7 @@ for url in all_urls:
     }
 
     # Loop through the Google Scholar search results in sets of 10 (e.g., 0 to 9, 10 to 19, etc.).
-    for j in range(0, 1000, 10): # get the first 1000 papers
+    for j in range(0, Scholar_num_of_articles, 10): # get the first 1000 papers
         # get url for each page
         this_url = url.format(i)
 
@@ -147,7 +145,7 @@ for url in all_urls:
         # use sleep to avoid status code 429
         sleep(3)
 
-    csv_file_name = os.path.join(output_directory, f'results_{i + 1}.csv')
+    csv_file_name = os.path.join(f'{output_directory}/Scopus', f'results_{i + 1}.csv')
     print(csv_file_name)
     final.to_csv(csv_file_name, index=False)
     i += 1
