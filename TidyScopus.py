@@ -30,8 +30,7 @@ def TidyingScopusResults(folder_path):
 
     # Apply some column transformations and renaming
     combined_df['Database'] = 'Scopus' # add which database it came from
-    combined_df['Citations'] = None # Scopus didn't provide citations but google scholar did
-    combined_df = combined_df.rename(columns={'full_text': 'Link'})
+    combined_df = combined_df.rename(columns={'full_text': 'Link', 'citation_count': 'Citations'})
     combined_df.columns = combined_df.columns.str.title()
 
     # only select the ones we want (i.e, the ones that other databases had too)

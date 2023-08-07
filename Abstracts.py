@@ -5,6 +5,7 @@ import pandas as pd
 import re
 from pyscopus import Scopus
 import urllib.parse
+import requests
 
 def fetch_PubMed_abstracts(pmids, PubMedEmail):
     # ID required to access the papers
@@ -23,12 +24,18 @@ def fetch_Scholar_abstracts(title):
     return None
 
 def fetch_Scopus_abstracts(scopus_id, ScopusKey):
-    scopus = Scopus(ScopusKey)
-    try:
-        abstract_retrieval = scopus.retrieve_abstract(scopus_id)
-        return abstract_retrieval.get("abstract")
-    except:
-        return None
+    headers = {
+        'Accept': 'application/json',
+        'X-ELS-APIKey': ScopusKey,
+    }
+    url = f"https://api.elsevier.com/content/abstract/scopus_id/{scopus_id}"
+    response = requests.get(url, headers=headers)
+    data = response.json()
+    if 'abstracts-retrieval-response' in data:
+        if 'coredata' in data['abstracts-retrieval-response']:
+            if 'dc:description' in data['abstracts-retrieval-response']['coredata']:
+                return data['abstracts-retrieval-response']['coredata']['dc:description']
+    return None
 
 def fetch_abstracts(output_directory, PubMedEmail, ScopusKey):
     df = pd.read_csv(f'{output_directory}/Unique_papers.csv')

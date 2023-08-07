@@ -45,11 +45,17 @@ def QueryScholar(urls, Scholar_num_of_articles, output_directory):
 
     # extracting the papers' tags
     def get_tags(doc):
-        paper_tag = doc.select('.gs_r.gs_or.gs_scl')
-        link_tag = doc.select('.gs_rt a')
+        paper_tag = [doc ]# .select('.gs_r.gs_or.gs_scl')[0]
+        link_tag = doc.select('.gs_rt a[data-clk-atid]')
         author_tag = doc.select('.gs_a')
+        citation_tags = doc.select('.gs_flb a[href^="/scholar?cites"]')
 
-        return paper_tag, link_tag, author_tag
+        return {
+            "paper": paper_tag[0],
+            "link": link_tag[0],
+            "author": author_tag[0],
+            "citations": citation_tags[0] if len(citation_tags) > 0 else 0
+        }
 
     # paper title
     def get_papertitle(paper_tag):
@@ -91,13 +97,19 @@ def QueryScholar(urls, Scholar_num_of_articles, output_directory):
             if not doc:
                 print("Failed to fetch or parse data from:", this_url)
                 continue
+            
+            papers = [
+                get_tags(d) for d in doc.select("div[data-rp]")
+            ]
+            paper_tag = [p["paper"] for p in papers]
+            link_tag =  [p["link"] for p in papers]
+            author_tag = [p["author"] for p in papers]
+            citation_counts = [p["citations"] for p in papers]
 
-            paper_tag, link_tag, author_tag = get_tags(doc)
             papername = get_papertitle(paper_tag)
             year, publication, author = get_author_year_publi_info(author_tag)
             link = get_link(link_tag)
             url_column = [this_url] * len(papername)
-            citation_counts = [get_citation_count(link) for link in link]
 
             # Store each paper's data
             for i in range(len(papername)):
@@ -106,11 +118,10 @@ def QueryScholar(urls, Scholar_num_of_articles, output_directory):
                     'Year': year[i],
                     'Authors': author[i],
                     'Publication': publication[i],
-                    'Link': link[i],
+                    'Link': link_tag[i]['href'],
                     'Source': url_column[i],
                     'Citations': citation_counts[i]
                 })
-            sleep(3)
 
     # Convert all collected data to a DataFrame
     df = pd.DataFrame(all_data)

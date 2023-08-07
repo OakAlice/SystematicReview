@@ -24,9 +24,9 @@ search_strings = combinations_A #+ combinations_AB + combinations_AC + combinati
 output_directory = "C:/Users/oakle/OneDrive/Documents/Systematic Results"
 
 # number of articles per search from each of the databases
-PubMed_num_of_articles = 2
-Scholar_num_of_articles = 2
-Scopus_num_of_articles = 2
+PubMed_num_of_articles = 1000
+Scholar_num_of_articles = 1000
+Scopus_num_of_articles = 100
 
 # API keys
 ScopusKey = 'fdbb42b4b0363feb81cf4551863b0279' # Elsevier's Scopus Search API
@@ -55,7 +55,7 @@ def main():
     TidyingScopusResults(output_directory)
     TidyingPubMedResults(output_directory)
     CombiningDatabases(output_directory)
-    fetch_abstracts(output_directory, PubMedEmail, ScopusKey)
+    #fetch_abstracts(output_directory, PubMedEmail, ScopusKey)
 
 if __name__ == "__main__":
     main()
