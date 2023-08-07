@@ -30,7 +30,7 @@ Scopus_num_of_articles = 2
 
 # API keys
 ScopusKey = 'fdbb42b4b0363feb81cf4551863b0279' # Elsevier's Scopus Search API
-PubMedEmail = 'oaw001@student.usc.edu.au'
+PubMedEmail = 'oaw001@student.usc.edu.au' # PubMed email account
 
 # The script is now ready to run
 
@@ -43,6 +43,7 @@ from TidyScholar import TidyingScholarResults
 from TidyScopus import TidyingScopusResults
 from TidyPubMed import TidyingPubMedResults
 from Combining import CombiningDatabases
+from Abstracts import fetch_abstracts
 
 # call and run all the scripts with these variables
 def main():
@@ -54,6 +55,7 @@ def main():
     TidyingScopusResults(output_directory)
     TidyingPubMedResults(output_directory)
     CombiningDatabases(output_directory)
+    fetch_abstracts(output_directory, PubMedEmail, ScopusKey)
 
 if __name__ == "__main__":
     main()

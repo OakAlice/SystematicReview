@@ -18,8 +18,13 @@ def CombiningDatabases(folder_path):
     # Concatenate all df in the list into one df
     combined_df = pd.concat(dataframes_list, ignore_index=True)
 
-    # remove duplicates
-    combined_df = combined_df.drop_duplicates(subset=['Title'])
+    # remove duplicates, but retain the Google Scholar version if possible
+    # Set 'Database' as categorical and define 'Scholar' as the last category
+    combined_df['Database'] = pd.Categorical(combined_df['Database'], categories=['Scopus', 'Scholar', 'PubMed'], ordered=True)
+    # Sort the dataframe first by 'Title' and then by 'Database' in ascending order
+    combined_df.sort_values(['Title', 'Database'], ascending=[True, True], inplace=True)
+    # Drop duplicates based on 'Title' and keep the last (which is 'Scholar' if it exists)
+    combined_df.drop_duplicates(subset='Title', keep='last', inplace=True)
 
     # print to csv
     csv_file_name = os.path.join(folder_path, 'Unique_papers.csv')
