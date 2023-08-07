@@ -58,9 +58,3 @@ def fetch_abstracts(output_directory, PubMedEmail, ScopusKey):
     df.to_csv(csv_file_name, index=False)
 
 
-from UserInput import output_directory
-from UserInput import PubMedEmail
-from UserInput import ScopusKey
-fetch_abstracts(output_directory, PubMedEmail, ScopusKey)
-
-

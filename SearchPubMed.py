@@ -5,6 +5,7 @@ import pandas as pd
 import time
 from Bio import Entrez
 from requests.exceptions import HTTPError
+from urllib.error import HTTPError as urlHTTPERROR
 
 def QueryPubMed(search_strings, PubMed_num_of_articles, output_directory, PubMedEmail):
     # Set email (required by NCBI API)
@@ -34,6 +35,8 @@ def QueryPubMed(search_strings, PubMed_num_of_articles, output_directory, PubMed
                                 id=ids)
             results = Entrez.read(handle)
             return results
+        except urlHTTPERROR as e:
+            print(f"Bad HTTP request for {id_list}. Error: {e}")
         except HTTPError as e:
             print("An error occurred while fetching details:", e)
             return None

@@ -87,7 +87,7 @@ def QueryScholar(urls, Scholar_num_of_articles, output_directory):
         return years, publications, authors
 
     all_data = []
-
+    print(f"number of urls: {len(urls)}")
     for url in urls:
         for j in range(0, Scholar_num_of_articles, 10):  # get the first 1000 papers
             this_url = url.format(j)
@@ -97,10 +97,11 @@ def QueryScholar(urls, Scholar_num_of_articles, output_directory):
             if not doc:
                 print("Failed to fetch or parse data from:", this_url)
                 continue
-            
+
             papers = [
                 get_tags(d) for d in doc.select("div[data-rp]")
             ]
+            print(f"Number of papers: {len(papers)}")
             paper_tag = [p["paper"] for p in papers]
             link_tag =  [p["link"] for p in papers]
             author_tag = [p["author"] for p in papers]
@@ -122,7 +123,8 @@ def QueryScholar(urls, Scholar_num_of_articles, output_directory):
                     'Source': url_column[i],
                     'Citations': citation_counts[i]
                 })
-
+            sleep(3)
+            
     # Convert all collected data to a DataFrame
     df = pd.DataFrame(all_data)
     csv_file_name = os.path.join(output_directory, 'Scholar/results.csv')

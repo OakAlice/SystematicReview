@@ -9,7 +9,12 @@ def QueryScopus(ScopusKey, search_strings, output_directory, Scopus_num_of_artic
     scopus = Scopus(ScopusKey)
 
     def process_query(query, scopus, Scopus_num_of_articles):
-        search_df = scopus.search(query, count=Scopus_num_of_articles) #, view="STANDARD")
+        selected_columns = ['scopus_id', 'citation_count', 'title', 'year', 'publication_name', 'subtype_description', 'authors', 'full_text', 'query']
+        try:
+            search_df = scopus.search(query, count=Scopus_num_of_articles, view="STANDARD")
+        except KeyError as e:
+            print(e)
+            return pd.DataFrame(columns=selected_columns)
         # Change the date format
         search_df['year'] = search_df['cover_date'].str.extract(r'(\d{4})')
 
@@ -17,12 +22,13 @@ def QueryScopus(ScopusKey, search_strings, output_directory, Scopus_num_of_artic
         search_df['query'] = query
 
         # Select the columns you want
-        selected_columns = ['scopus_id', 'citation_count', 'title', 'year', 'publication_name', 'subtype_description', 'authors', 'full_text', 'query']
+        
         extracted_data = search_df[selected_columns]
 
         return extracted_data
          
     search_queries = [' AND '.join(words) for words in search_strings]
+    print(len(search_queries))
     for j, search_query in enumerate(search_queries):
         # Define the search queries
         search_query_abs = f"ABS({search_query})"
@@ -34,6 +40,7 @@ def QueryScopus(ScopusKey, search_strings, output_directory, Scopus_num_of_artic
         # Perform the searches and concatenate the results
         for query in [search_query_abs, search_query_title, search_query_key]:
             processed_data = process_query(query, scopus, Scopus_num_of_articles)
+            print(processed_data.size)
             if not processed_data.empty:  # only append if processed_data is not empty
                 all_results = pd.concat([all_results, processed_data], ignore_index=True)
 
