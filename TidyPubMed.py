@@ -5,7 +5,7 @@ import os
 import pandas as pd
 
 def TidyingPubMedResults(folder_path):
-    file_path = os.path.join(folder_path, '/Scholar/PubMed_results.csv')
+    file_path = f'{folder_path}/PubMED/PubMed_results.csv'
     df = pd.read_csv(file_path)
 
     df['Database'] = 'PubMed' # add which database it came from
@@ -16,5 +16,5 @@ def TidyingPubMedResults(folder_path):
     subset = df[[col for col in desired_columns if col in df.columns]]
 
     # print to csv
-    csv_file_name = os.path.join(folder_path, 'PubMed_collated.csv')
-    df.to_csv(csv_file_name, index=False)
+    csv_file_name = f'{folder_path}/PubMed_collated.csv'
+    subset.to_csv(csv_file_name, index=False)

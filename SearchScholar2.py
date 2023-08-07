@@ -1,4 +1,4 @@
-# define a function to query google scholar with the search strings
+## Searching google scholar with the search strings
 # instructions from @nandinisaini021 on medium
 
 # packages
@@ -9,33 +9,29 @@ import re
 from time import sleep
 import os
 
+#from ScholarStringsToUrl import generate_scholar_urls
+#from UserInput import search_strings
+#urls = generate_scholar_urls(search_strings)
+
 def QueryScholar(urls, Scholar_num_of_articles, output_directory):
 
-    # required to allow us to access the web page
+    # required to allow us to access the page
     headers = {
         'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36'
     }
 
     # function for getting info of the web page
-    def get_paperinfo(url):
+    def get_paperinfo(paper_url):
         # download the page
-        response = requests.get(url, headers=headers)
-
-        # check successful response
-        if response.status_code != 200:
-            print('Status code:', response.status_code)
-            raise Exception('Failed to fetch web page ')
+        response = requests.get(paper_url, headers=headers)
 
         # parse using beautiful soup
         paper_doc = BeautifulSoup(response.text, 'html.parser')
 
         return paper_doc
 
-    def get_citation_count(url):
-        response = requests.get(url, headers=headers)
-        if response.status_code != 200:
-            print('Status code:', response.status_code)
-            raise Exception('Failed to fetch web page')
+    def get_citation_count(paper_url):
+        response = requests.get(paper_url, headers=headers)
 
         paper_doc = BeautifulSoup(response.text, 'html.parser')
         
@@ -84,64 +80,39 @@ def QueryScholar(urls, Scholar_num_of_articles, output_directory):
             authors.append(author)
         return years, publications, authors
 
-    # adding information in repository
-    def add_in_paper_repo(papername, year, author, publi, link, url_column):
-        paper_repos_dict['Title'].extend(papername)
-        paper_repos_dict['Year'].extend(year)
-        paper_repos_dict['Author'].extend(author)
-        paper_repos_dict['Publication'].extend(publi)
-        paper_repos_dict['Url'].extend(link)
-        paper_repos_dict['Source'].extend(url_column)
-        return pd.DataFrame(paper_repos_dict)
+    all_data = []
 
-    i = 0
     for url in urls:
-        # creating final repository
-        paper_repos_dict = {
-            'Title': [],
-            'Year': [],
-            'Authors': [],
-            'Publication': [],
-            'Link': [],
-            'Source': [],
-            'Citations': []
-        }
+        for j in range(0, Scholar_num_of_articles, 10):  # get the first 1000 papers
+            this_url = url.format(j)
 
-        # Loop through the Google Scholar search results in sets of 10 (e.g., 0 to 9, 10 to 19, etc.).
-        for j in range(0, Scholar_num_of_articles, 10): # get papers
-            # get url for each page
-            this_url = url.format(i)
-
-            # function for the get content of each page
             doc = get_paperinfo(this_url)
+            # Check if doc contains any data
+            if not doc:
+                print("Failed to fetch or parse data from:", this_url)
+                continue
 
-            # function for the collecting tags
             paper_tag, link_tag, author_tag = get_tags(doc)
-
-            # paper title from each page
             papername = get_papertitle(paper_tag)
-
-            # year, author, publication of the paper
             year, publication, author = get_author_year_publi_info(author_tag)
-
-            # url of the paper
             link = get_link(link_tag)
-
-            # add the source URL
             url_column = [this_url] * len(papername)
-
-            # get the number of citations
             citation_counts = [get_citation_count(link) for link in link]
 
-            # add in paper repo dict
-            final = add_in_paper_repo(papername, year, author, publication, link, url_column)
-            
-            # add the citation counts to the DataFrame
-            final['Citations'] = citation_counts
-
-            # use sleep to avoid status code 429
+            # Store each paper's data
+            for i in range(len(papername)):
+                all_data.append({
+                    'Title': papername[i],
+                    'Year': year[i],
+                    'Authors': author[i],
+                    'Publication': publication[i],
+                    'Link': link[i],
+                    'Source': url_column[i],
+                    'Citations': citation_counts[i]
+                })
             sleep(3)
 
-        csv_file_name = os.path.join(f'{output_directory}/Scholar', f'results_{i + 1}.csv')
-        final.to_csv(csv_file_name, index=False)
-        i += 1
+    # Convert all collected data to a DataFrame
+    df = pd.DataFrame(all_data)
+    csv_file_name = os.path.join(output_directory, 'Scholar/results.csv')
+    df.to_csv(csv_file_name, index=False)

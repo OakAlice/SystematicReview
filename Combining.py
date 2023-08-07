@@ -9,7 +9,7 @@ def CombiningDatabases(folder_path):
     # Loop through all files in the folder
     for filename in os.listdir(folder_path):
         if filename.endswith('.csv'):
-            file_path = os.path.join(f'{folder_path}', filename)
+            file_path = f'{folder_path}/{filename}'
             
             # Load each CSV file into a df and append
             df = pd.read_csv(file_path)

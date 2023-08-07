@@ -18,15 +18,15 @@ combinations_AD = list(product(A1, A2, A3, D)) # sport and sleep specific
 long_combinations = list(product(A1, A2, A3, B, C)) # animal unsupervised
 
 # they're added together to form one list
-search_strings = combinations_A + combinations_AB + combinations_AC + combinations_AD + long_combinations
+search_strings = combinations_A #+ combinations_AB + combinations_AC + combinations_AD + long_combinations
 
 # the parent directory where the results should be saved (they'll go into individual database folders)
 output_directory = "C:/Users/oakle/OneDrive/Documents/Systematic Results"
 
 # number of articles per search from each of the databases
-PubMed_num_of_articles = 5
-Scholar_num_of_articles = 5
-Scopus_num_of_articles = 5
+PubMed_num_of_articles = 2
+Scholar_num_of_articles = 2
+Scopus_num_of_articles = 2
 
 # API keys
 ScopusKey = 'fdbb42b4b0363feb81cf4551863b0279' # Elsevier's Scopus Search API
@@ -36,13 +36,13 @@ PubMedEmail = 'oaw001@student.usc.edu.au'
 
 # import the functions from each of the individual scripts
 from ScholarStringsToUrl import generate_scholar_urls
-from SearchScholar import QueryScholar
+from SearchScholar2 import QueryScholar
 from SearchScopus import QueryScopus
 from SearchPubMed import QueryPubMed
-from ScholarResultsTidying import TidyingScholarResults
-from ScopusResultsTidy import TidyingScopusResults
-from PubMedResultsTidy import TidyingPubMedResults
-from Integration import CombiningDatabases
+from TidyScholar import TidyingScholarResults
+from TidyScopus import TidyingScopusResults
+from TidyPubMed import TidyingPubMedResults
+from Combining import CombiningDatabases
 
 # call and run all the scripts with these variables
 def main():

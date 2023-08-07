@@ -36,7 +36,8 @@ def QueryScopus(ScopusKey, search_strings, output_directory, Scopus_num_of_artic
         # Perform the searches and concatenate the results
         for query in [search_query_abs, search_query_title, search_query_key]:
             processed_data = process_query(query, scopus, Scopus_num_of_articles)
-            all_results = all_results.append(processed_data, ignore_index=True)
+            if not processed_data.empty:  # only append if processed_data is not empty
+                all_results = pd.concat([all_results, processed_data], ignore_index=True)
 
         # Specify the CSV file name
         csv_file_name = os.path.join(f'{output_directory}/Scopus', f'Scopus_results_{j}.csv')

@@ -2,7 +2,7 @@
 
 def generate_scholar_urls(search_strings):
     scholar_base = "https://scholar.google.com/scholar?q=words+here+&hl=en&as_sdt=0%2C5&as_ylo=2013&as_yhi=2023"
-    all_urls = []
+    urls = []
 
     # Iterate over each set of search strings
     for search_set in search_strings:
@@ -13,6 +13,6 @@ def generate_scholar_urls(search_strings):
         url_scholar = scholar_base.replace("words+here", replacement_scholar)
 
         # Append into a list
-        all_urls.append(url_scholar)
+        urls.append(url_scholar)
     
-    return all_urls
+    return urls
