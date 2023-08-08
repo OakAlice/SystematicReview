@@ -30,8 +30,20 @@ def TidyingScholarResults(output_directory):
     # update the 'Query' column
     df['Query'] = df['Source'].apply(get_keywords_from_url)
 
+    # find the number of citations
+    def get_citations_from_string(string):
+        match = re.search(r'Cited by (\d+)', string)
+        if match:
+            citation_number = int(match.group(1))
+            return citation_number
+        else:
+            return "unknown"
+
+    # change the citations row
+    df['Citations'] = df['Citations'].apply(get_citations_from_string)
+
     # select the columns shared across the databases
-    desired_columns = ['Database', 'Query', 'Title', 'Authors', 'Year', 'Link']
+    desired_columns = ['Database', 'Query', 'Title', 'Authors', 'Year', 'Citations', 'Link']
     subset = df[[col for col in desired_columns if col in df.columns]]
 
     # print to csv

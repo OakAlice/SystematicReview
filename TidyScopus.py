@@ -15,14 +15,18 @@ def TidyingScopusResults(folder_path):
         if filename.endswith('.csv'):
             file_path = os.path.join(f'{folder_path}/Scopus', filename)
             
-            # Load each CSV file into a df and append
-            df = pd.read_csv(file_path)
-            
-            if not df.empty:
-                dataframes_list.append(df)
-
+            try:
+                # Attempt to Load each CSV file into a df
+                df = pd.read_csv(file_path)
+                
+                # Append df to the list if not empty
+                if not df.empty:
+                    dataframes_list.append(df)
+            except pd.errors.EmptyDataError:
+                print(f"File {filename} is empty. Skipping...")
+    
+    # append the non-empty files together
     if dataframes_list:
-        # Concatenate all df in the list into one df
         combined_df = pd.concat(dataframes_list, ignore_index=True)
     
     # remove duplicates

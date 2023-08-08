@@ -18,14 +18,14 @@ combinations_AD = list(product(A1, A2, A3, D)) # sport and sleep specific
 long_combinations = list(product(A1, A2, A3, B, C)) # animal unsupervised
 
 # they're added together to form one list
-search_strings = combinations_A + combinations_AB #+ combinations_AC + combinations_AD + long_combinations
+search_strings = combinations_A + combinations_AB + combinations_AC + combinations_AD + long_combinations
 
 # the parent directory where the results should be saved (they'll go into individual database folders)
 output_directory = "C:/Users/oakle/OneDrive/Documents/Systematic Results"
 
 # number of articles per search from each of the databases
 PubMed_num_of_articles = 5
-Scholar_num_of_articles = 2
+Scholar_num_of_articles = 10
 Scopus_num_of_articles = 2
 
 # API keys
@@ -43,19 +43,19 @@ from TidyScholar import TidyingScholarResults
 from TidyScopus import TidyingScopusResults
 from TidyPubMed import TidyingPubMedResults
 from Combining import CombiningDatabases
-from Abstracts import fetch_abstracts
+from GettingAbstracts import get_abstracts
 
 # call and run all the scripts with these variables
 def main():
-    urls = generate_scholar_urls(search_strings)
+    #urls = generate_scholar_urls(search_strings)
     #QueryScholar(urls, Scholar_num_of_articles, output_directory)
     #QueryScopus(ScopusKey, search_strings, output_directory, Scopus_num_of_articles)
-    QueryPubMed(search_strings, PubMed_num_of_articles, output_directory, PubMedEmail)
+    #QueryPubMed(search_strings, PubMed_num_of_articles, output_directory, PubMedEmail)
     #TidyingScholarResults(output_directory)
     #TidyingScopusResults(output_directory)
     #TidyingPubMedResults(output_directory)
     #CombiningDatabases(output_directory)
-    #fetch_abstracts(output_directory, PubMedEmail, ScopusKey)
+    get_abstracts(output_directory, PubMedEmail)
 
 if __name__ == "__main__":
     main()
