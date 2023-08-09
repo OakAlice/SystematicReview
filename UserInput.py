@@ -18,19 +18,19 @@ combinations_AD = list(product(A1, A2, A3, D)) # sport and sleep specific
 long_combinations = list(product(A1, A2, A3, B, C)) # animal unsupervised
 
 # they're added together to form one list
-search_strings = combinations_A + combinations_AB + combinations_AC + combinations_AD + long_combinations
+search_strings = combinations_A #+ combinations_AB + combinations_AC + combinations_AD + long_combinations
 
 # the parent directory where the results should be saved (they'll go into individual database folders)
 output_directory = "C:/Users/oakle/OneDrive/Documents/Systematic Results"
 
 # number of articles per search from each of the databases
-PubMed_num_of_articles = 5
-Scholar_num_of_articles = 10
-Scopus_num_of_articles = 2
+Num_of_articles = 2
 
 # API keys
 ScopusKey = 'fdbb42b4b0363feb81cf4551863b0279' # Elsevier's Scopus Search API
 PubMedEmail = 'oaw001@student.usc.edu.au' # PubMed email account
+COREKey = "0tdpTMh4NwxLP8k2G9CUBiZqS6ngfoO5" # for CORE Api
+CORE_API_URL = "https://core.ac.uk/api-v2/articles/search"
 
 # The script is now ready to run
 
@@ -39,23 +39,32 @@ from ScholarStringsToUrl import generate_scholar_urls
 from SearchScholar2 import QueryScholar
 from SearchScopus import QueryScopus
 from SearchPubMed import QueryPubMed
+from SearchArXiv import QueryArxiv
+from SearchCORE import QueryCore
+
 from TidyScholar import TidyingScholarResults
 from TidyScopus import TidyingScopusResults
 from TidyPubMed import TidyingPubMedResults
+
 from Combining import CombiningDatabases
 from GettingAbstracts import get_abstracts
 
 # call and run all the scripts with these variables
 def main():
-    #urls = generate_scholar_urls(search_strings)
-    #QueryScholar(urls, Scholar_num_of_articles, output_directory)
-    #QueryScopus(ScopusKey, search_strings, output_directory, Scopus_num_of_articles)
-    #QueryPubMed(search_strings, PubMed_num_of_articles, output_directory, PubMedEmail)
+    urls = generate_scholar_urls(search_strings)
+    
+    #QueryScholar(urls, Num_of_articles, output_directory)
+    #QueryScopus(ScopusKey, search_strings, output_directory, Num_of_articles)
+    #QueryPubMed(search_strings, Num_of_articles, output_directory, PubMedEmail)
+    #QueryArxiv(search_strings, Num_of_articles, output_directory)
+    QueryCore(output_directory, search_strings, COREKey, Num_of_articles)
+    
     #TidyingScholarResults(output_directory)
     #TidyingScopusResults(output_directory)
     #TidyingPubMedResults(output_directory)
+    
     #CombiningDatabases(output_directory)
-    get_abstracts(output_directory, PubMedEmail)
+    #get_abstracts(output_directory, PubMedEmail)
 
 if __name__ == "__main__":
     main()

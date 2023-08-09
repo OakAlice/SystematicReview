@@ -22,7 +22,6 @@ def QueryScopus(ScopusKey, search_strings, output_directory, Scopus_num_of_artic
         search_df['query'] = query
 
         # Select the columns you want
-        
         extracted_data = search_df[selected_columns]
 
         return extracted_data

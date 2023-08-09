@@ -13,8 +13,9 @@ def TidyingPubMedResults(folder_path):
 
     # only select the ones we want (i.e, the ones that other databases had too)
     desired_columns = ['Database', 'Query', 'Title', 'Authors', 'Year', 'Citations', 'Link']
-    subset = df[[col for col in desired_columns if col in df.columns]]
+    cols_subset = df[[col for col in desired_columns if col in df.columns]]
+    cols_subset = cols_subset.drop_duplicates(subset='Title')
 
     # print to csv
     csv_file_name = f'{folder_path}/PubMed_collated.csv'
-    subset.to_csv(csv_file_name, index=False)
+    cols_subset.to_csv(csv_file_name, index=False)

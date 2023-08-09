@@ -24,24 +24,12 @@ def QueryScholar(urls, Scholar_num_of_articles, output_directory):
     def get_paperinfo(paper_url):
         # download the page
         response = requests.get(paper_url, headers=headers)
+        print(response)
 
         # parse using beautiful soup
         paper_doc = BeautifulSoup(response.text, 'html.parser')
 
         return paper_doc
-
-    def get_citation_count(paper_url):
-        response = requests.get(paper_url, headers=headers)
-
-        paper_doc = BeautifulSoup(response.text, 'html.parser')
-        
-        citation_tag = paper_doc.select_one('.gs_citi')
-        if citation_tag:
-            citation_text = citation_tag.text
-            citation_count = int(re.search(r'\d+', citation_text).group()) if re.search(r'\d+', citation_text) else 0
-            return citation_count
-        else:
-            return 0
 
     # extracting the papers' tags
     def get_tags(doc):
@@ -91,7 +79,7 @@ def QueryScholar(urls, Scholar_num_of_articles, output_directory):
     for url in urls:
         for j in range(0, Scholar_num_of_articles, 10):  # get the first 1000 papers
             this_url = url.format(j)
-
+             
             doc = get_paperinfo(this_url)
             # Check if doc contains any data
             if not doc:
