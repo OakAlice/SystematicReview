@@ -28,7 +28,10 @@ def QueryScopus(ScopusKey, search_strings, output_directory, Scopus_num_of_artic
          
     search_queries = [' AND '.join(words) for words in search_strings]
     print(len(search_queries))
-    for j, search_query in enumerate(search_queries):
+
+    all_results = pd.DataFrame()
+
+    for search_query in search_queries:
         # Define the search queries
         search_query_abs = f"ABS({search_query})"
         search_query_title = f"TITLE({search_query})"
@@ -43,7 +46,17 @@ def QueryScopus(ScopusKey, search_strings, output_directory, Scopus_num_of_artic
             if not processed_data.empty:  # only append if processed_data is not empty
                 all_results = pd.concat([all_results, processed_data], ignore_index=True)
 
-        # Specify the CSV file name
-        csv_file_name = os.path.join(f'{output_directory}/Scopus', f'Scopus_results_{j}.csv')
-        # Save the combined search results to a CSV file
-        all_results.to_csv(csv_file_name, index=False)
+    final_df = all_results.drop_duplicates(subset=['title'])
+
+    # Apply some column transformations and renaming
+    final_df = final_df.rename(columns={'full_text': 'Link', 'citation_count': 'Citations'})
+    final_df.columns = final_df.columns.str.title()
+
+    # only select the ones we want (plus empty abstract untill I figure that out)
+    final_df['Abstract'] = None
+    desired_columns = ['Query', 'Title', 'Authors', 'Year', 'Citations', 'Link', 'Abstract']
+    subset = final_df[[col for col in desired_columns if col in final_df.columns]]
+
+    # save to a csv
+    csv_file_name = f'{output_directory}\Scopus_results.csv'
+    subset.to_csv(csv_file_name, index=False)

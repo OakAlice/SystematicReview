@@ -5,7 +5,6 @@
 # Suspect that the search terms are being sent as letters rather than words or somethign?
 
 from typing import Any, Dict, List
-import requests
 import pandas as pd
 from core_api import CoreClient, CoreFindResult
 
@@ -18,8 +17,9 @@ def search_core(c: CoreClient, q: str, Num_of_articles) -> List[CoreFindResult]:
 
 def QueryCore(output_directory, search_strings, COREKey, Num_of_articles):
     papers = []
+    search_queries = [' AND '.join(words) for words in search_strings]
     c = CoreClient(api_key=COREKey)
-    for query in search_strings:
+    for query in search_queries:
         results = search_core(c, query, Num_of_articles)
         for r in results:
             links = list(filter(lambda x: x.get("type", "") == "reader", r.links))
@@ -28,6 +28,7 @@ def QueryCore(output_directory, search_strings, COREKey, Num_of_articles):
                 "Title": r.title,
                 "Authors":  [n['name'] for n in r.authors],
                 "Year": r.yearPublished,
+                "Citations": None,
                 "Link": links[0]["url"] if len(links) > 0 else None,
                 "Abstract": r.abstract
             })
@@ -36,6 +37,6 @@ def QueryCore(output_directory, search_strings, COREKey, Num_of_articles):
     df = pd.DataFrame(papers)
 
     # Save to CSV
-    filepath = f"{output_directory}/CORE/core_results.csv"
+    filepath = f"{output_directory}/core_results.csv"
     df.to_csv(filepath, index=False)
     print(f"Results saved to {filepath}")

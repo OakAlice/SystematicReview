@@ -88,8 +88,10 @@ class CoreClient:
         query_parameters = []
 
         if isinstance(query, str):
+            print(f'the string is: {query}')
             query_parameters.append(query)
         elif isinstance(query, tuple):
+            print(f'the tuple is: {query}')
             query_parameters.extend(query)
 
         #Generate parameters for suggested search field of the web interface

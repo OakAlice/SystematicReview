@@ -81,7 +81,7 @@ def QueryPubMed(search_strings, PubMed_num_of_articles, output_directory, PubMed
                         if abstract_section and 'AbstractText' in abstract_section:
                             abstract = ''.join(abstract_section['AbstractText'])
                         else:
-                            abstract = 'N/A'  # or whatever default you'd like
+                            abstract = 'N/A'
  
 
                         all_papers.append({
@@ -94,8 +94,19 @@ def QueryPubMed(search_strings, PubMed_num_of_articles, output_directory, PubMed
                         })
                         sleep(1/3)  # Ensure we don't exceed 3 queries per second
 
+                # save into a dataframe and edit the structure and columns a little
                 df = pd.DataFrame(all_papers)
-                filename = f'{output_directory}/PubMED/PubMed_results.csv'
+                df['Citations'] = None # didn't provide citations
+                
+                # only select the columns we want
+                desired_columns = ['Query', 'Title', 'Authors', 'Year', 'Citations', 'Link', 'Abstract']
+                cols_subset = df[[col for col in desired_columns if col in df.columns]]
+                
+                # drop the duplicates
+                cols_subset = cols_subset.drop_duplicates(subset='Title')
+                
+                # save as a csv
+                filename = f'{output_directory}/PubMed_results.csv'
                 df.to_csv(filename, index=False)  # Save DataFrame to CSV file
         return all_papers
     

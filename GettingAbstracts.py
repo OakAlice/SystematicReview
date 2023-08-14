@@ -44,6 +44,7 @@ def get_abstracts(output_directory, PubMedEmail):
         # ID required to access the papers
         Entrez.email = PubMedEmail
         handle = Entrez.efetch(db="pubmed", id=pmids, rettype="abstract", retmode="text")
+        print(handle)
         return handle.read()
 
     # now using generic webscraping
@@ -69,9 +70,6 @@ def get_abstracts(output_directory, PubMedEmail):
     def scrape_plos(soup):
         return extract_text(soup.find('div', class_='abstract-content'))
 
-    def scrape_sciencedirect(soup):
-        return extract_text(soup.find('p', id='abspara0010'))
-
     def scrape_springer(soup):
         return extract_text(soup.find('class', id='Abs1-content'))
 
@@ -81,11 +79,6 @@ def get_abstracts(output_directory, PubMedEmail):
 
     def scrape_nature(soup):
         return extract_text(soup.find('div', id='Abs1-content'))
-
-    def scrape_besjournals(soup):
-        abstract_div = extract_text(soup.find('div', class_='article-section__content en main'))
-        return abstract_div.get_text(strip=True) if abstract_div else None
-
 
     # main function
     def process_abstracts(output_directory, PubMedEmail):
@@ -98,12 +91,10 @@ def get_abstracts(output_directory, PubMedEmail):
         journal_function_map = {
             'mdpi': scrape_mdpi,
             'dl': scrape_acmdl,
-            'besjounrnals': scrape_besjournals,
             'ieeexplore': scrape_ieeex,
             'nature': scrape_nature,
-            'journals': scrape_plos,  # journals is the name for plos
-            'sciencedirect': scrape_sciencedirect,
-            'link': scrape_springer   # springer
+            'journals': scrape_plos, # journals is the name for plos
+            'link': scrape_springer  # springer
         }
 
         for idx, row in df.iterrows():
@@ -118,17 +109,17 @@ def get_abstracts(output_directory, PubMedEmail):
                 if row['Database'] == 'PubMed':
                     pmid = re.findall(r'\d+', link)[-1]
                     abstract = fetch_PubMed_abstracts([pmid], PubMedEmail)
-                elif extracted_journal in journal_function_map:
-                    soup = get_html(link)
-                    print(f"Processing link: {link}")
+                #elif extracted_journal in journal_function_map:
+                 #   soup = get_html(link)
+                 #   print(f"Processing link: {link}")
                     
-                    if soup is None: # because some sites block me so I get "Forbidden"
-                        continue
-                    if not soup:
-                        print(f"Error getting soup for link: {link}")
-                        continue
+                 #  if soup is None: # because some sites block me so I get "Forbidden"
+                 #      continue
+                 #  if not soup:
+                 #    print(f"Error getting soup for link: {link}")
+                 #      continue
 
-                    abstract = journal_function_map[extracted_journal](soup)
+                 #  abstract = journal_function_map[extracted_journal](soup)
                 else:
                     continue
         

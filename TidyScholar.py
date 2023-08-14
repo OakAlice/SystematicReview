@@ -41,11 +41,12 @@ def TidyingScholarResults(output_directory):
 
     # change the citations row
     df['Citations'] = df['Citations'].apply(get_citations_from_string)
+    df['Abstract'] = None # won't give it to me
 
     # select the columns shared across the databases
-    desired_columns = ['Database', 'Query', 'Title', 'Authors', 'Year', 'Citations', 'Link']
+    desired_columns = ['Query', 'Title', 'Authors', 'Year', 'Citations', 'Link', 'Abstract']
     subset = df[[col for col in desired_columns if col in df.columns]]
 
     # print to csv
-    csv_file_name = f'{output_directory}/Scholar_collated.csv'
+    csv_file_name = f'{output_directory}/Scholar_results.csv'
     subset.to_csv(csv_file_name, index=False)
