@@ -60,8 +60,8 @@ def main():
     
     #TidyingScholarResults(output_directory)
     
-    #CombiningDatabases(output_directory)
-    get_abstracts(output_directory, PubMedEmail)
+    CombiningDatabases(output_directory)
+    #get_abstracts(output_directory, PubMedEmail)
 
 if __name__ == "__main__":
     main()
