@@ -9,7 +9,7 @@ from urllib.error import HTTPError as urlHTTPERROR
 from time import sleep
 import http.client
 
-def QueryPubMed(search_strings, PubMed_num_of_articles, output_directory, PubMedEmail):
+def QueryPubMed(search_strings, Num_of_articles, output_directory, PubMedEmail):
     # Set email (required by NCBI API)
     Entrez.email = PubMedEmail
 
@@ -56,16 +56,15 @@ def QueryPubMed(search_strings, PubMed_num_of_articles, output_directory, PubMed
         print(f"Failed to fetch details after {max_retries} attempts.")
         return None
 
-    def process_searches(search_strings, PubMed_num_of_articles, output_directory):
+    def process_searches(search_strings, Num_of_articles, output_directory):
         search_queries = [' AND '.join(words) for words in search_strings]
-        num_of_articles = PubMed_num_of_articles
 
         all_papers = []
         for query in search_queries:
             results = search(query)
             
             if results and 'IdList' in results and len(results['IdList']) > 0:
-                id_list = results['IdList'][:num_of_articles]
+                id_list = results['IdList'][:Num_of_articles]
                 papers = fetch_details(id_list)
                 if papers is None: # skip if bad request
                     continue
@@ -85,7 +84,6 @@ def QueryPubMed(search_strings, PubMed_num_of_articles, output_directory, PubMed
  
 
                         all_papers.append({
-                            "Query": query,
                             "Title": title,
                             "Authors": authors,
                             "Year": year,
@@ -110,4 +108,4 @@ def QueryPubMed(search_strings, PubMed_num_of_articles, output_directory, PubMed
                 df.to_csv(filename, index=False)  # Save DataFrame to CSV file
         return all_papers
     
-    return process_searches(search_strings, PubMed_num_of_articles, output_directory)
+    return process_searches(search_strings, Num_of_articles, output_directory)

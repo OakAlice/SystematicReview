@@ -24,7 +24,6 @@ def QueryCore(output_directory, search_strings, COREKey, Num_of_articles):
         for r in results:
             links = list(filter(lambda x: x.get("type", "") == "reader", r.links))
             papers.append({
-                "Query": query,
                 "Title": r.title,
                 "Authors":  [n['name'] for n in r.authors],
                 "Year": r.yearPublished,

@@ -19,21 +19,9 @@ def CombiningDatabases(output_directory):
 
     # remove duplicates, retain the ones with abstracts
     combined_df['has_abstract'] = ~combined_df['Abstract'].isnull()
-    combined_df.sort_values(by=['has_abstract', 'Title', 'Count'], ascending=[False, True, True], inplace=True)
+    combined_df.sort_values(by=['has_abstract', 'Title'], ascending=[False, True], inplace=True)
     combined_df.drop_duplicates(subset=['Title'], keep='first', inplace=True)
     combined_df.drop(columns=['has_abstract'], inplace=True)
-
-    # standardise the formatting of the Query
-    # Remove special characters and terms
-    def clean_string(s):
-        # Remove terms ABS, AND, TITLE, KEY, and strip any parentheses or single quotes
-        cleaned = re.sub(r"\bABS\b|\bAND\b|\bTITLE\b|\bKEY\b|[()']", "", s)
-        # Split by comma (with optional surrounding spaces)
-        keywords = [keyword.strip() for keyword in cleaned.split(",") if keyword.strip()]
-        # Return as a single string separated by commas
-        return ', '.join(keywords)
-
-    combined_df['Query'] = combined_df['Query'].apply(clean_string)
 
     # Print to csv
     csv_file_name = f'{output_directory}/Unique_papers.csv'

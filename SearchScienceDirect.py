@@ -60,7 +60,6 @@ def QueryScienceDirect(search_strings, Num_of_articles, ScopusKey, output_direct
                         abstract = detailed_data['full-text-retrieval-response']['coredata']['dc:description']
 
                         all_papers.append({
-                            "Query": query,
                             "Title": title,
                             "Authors": authors,
                             "Year": year,
