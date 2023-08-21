@@ -22,22 +22,22 @@ long_combinations = list(product(A1, A2, A3, B, C)) # animal unsupervised
 search_strings = combinations_AB1 + combinations_AB2 + combinations_AC + combinations_AD + combinations_A + long_combinations
 
 # the parent directory where the results should be saved (they'll go into individual database folders)
-output_directory = "C:/Users/oakle/OneDrive/Documents/Systematic Results"
+output_directory = "C:/output/folder/path"
 
 # number of articles per search from each of the strings
 Num_of_articles = 50
 
 # API keys
-ScopusKey = 'fdbb42b4b0363feb81cf4551863b0279' # Elsevier's Scopus Search API
-PubMedEmail = 'oaw001@student.usc.edu.au' # PubMed email account
-COREKey = "0tdpTMh4NwxLP8k2G9CUBiZqS6ngfoO5" # for CORE Api
-SemanticKey = 'XBlMKbMLsO1pCQSj9zbQDaW7MrGOSvlS9OGo6ck' # for Semantic Scholar
+ScopusKey = 'XXXX' # Elsevier's Scopus Search API
+PubMedEmail = 'XXXX' # PubMed email account
+COREKey = "XXXX" # for CORE Api
+SemanticKey = 'XXXX' # for Semantic Scholar
 
 # The script is now ready to run
 
 # import the functions from each of the individual scripts
 
-from ScholarStringsToUrl import generate_scholar_urls
+#from ScholarStringsToUrl import generate_scholar_urls
 #from SearchScholar2 import QueryScholar
 #from TidyScholar import TidyingScholarResults
 
@@ -46,8 +46,6 @@ from SearchPubMed import QueryPubMed
 from SearchArXiv import QueryArxiv
 from SearchCORE import QueryCore
 from SearchScienceDirect import QueryScienceDirect
-#from SearchWoS import QueryWoS
-#from SearchSematic import QuerySematic
 
 from Combining import CombiningDatabases
 from GettingAbstracts import get_abstracts
@@ -58,15 +56,13 @@ def main():
     #QueryScholar(urls, Num_of_articles, output_directory)
     #TidyingScholarResults(output_directory)
     
-    #QueryScopus(ScopusKey, search_strings, output_directory, Num_of_articles)
-    #QueryPubMed(search_strings, Num_of_articles, output_directory, PubMedEmail)
-    #QueryArxiv(search_strings, Num_of_articles, output_directory)
-    #QueryCore(output_directory, search_strings, COREKey, Num_of_articles)
+    QueryScopus(ScopusKey, search_strings, output_directory, Num_of_articles)
+    QueryPubMed(search_strings, Num_of_articles, output_directory, PubMedEmail)
+    QueryArxiv(search_strings, Num_of_articles, output_directory)
+    QueryCore(output_directory, search_strings, COREKey, Num_of_articles)
     QueryScienceDirect(search_strings, Num_of_articles, ScopusKey, output_directory)
-    #QuerySemantic
-    #QueryWoS
         
-    #CombiningDatabases(output_directory)
+    CombiningDatabases(output_directory)
     #get_abstracts(output_directory, PubMedEmail)
 
 if __name__ == "__main__":
