@@ -13,12 +13,22 @@ import os
 #from UserInput import search_strings
 #urls = generate_scholar_urls(search_strings)
 
-def QueryScholar(urls, Scholar_num_of_articles, output_directory):
+def QueryScholar(urls, Num_of_articles, output_directory):
 
     # required to allow us to access the page
     headers = {
         'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36'
     }
+
+    scholar_directory = os.path.join(output_directory, 'Scholar')
+    os.makedirs(scholar_directory, exist_ok=True)
+
+    # CSV file path
+    csv_file_name = os.path.join(scholar_directory, 'results.csv')
+
+    # Check if file exists, if not create it with headers
+    if not os.path.isfile(csv_file_name):
+        pd.DataFrame(columns=['Title', 'Year', 'Authors', 'Publication', 'Link', 'Source', 'Citations']).to_csv(csv_file_name, index=False)
 
     # function for getting info of the web page
     def get_paperinfo(paper_url):
@@ -76,8 +86,9 @@ def QueryScholar(urls, Scholar_num_of_articles, output_directory):
 
     all_data = []
     print(f"number of urls: {len(urls)}")
+
     for url in urls:
-        for j in range(0, Scholar_num_of_articles, 10):  # get the first 1000 papers
+        for j in range(0, Num_of_articles, 10):  # get the first papers
             this_url = url.format(j)
              
             doc = get_paperinfo(this_url)
@@ -86,9 +97,7 @@ def QueryScholar(urls, Scholar_num_of_articles, output_directory):
                 print("Failed to fetch or parse data from:", this_url)
                 continue
 
-            papers = [
-                get_tags(d) for d in doc.select("div[data-rp]")
-            ]
+            papers = [get_tags(d) for d in doc.select("div[data-rp]")]
             print(url)
             print(f"Number of papers: {len(papers)}")
             paper_tag = [p["paper"] for p in papers]
@@ -112,6 +121,11 @@ def QueryScholar(urls, Scholar_num_of_articles, output_directory):
                     'Source': url_column[i],
                     'Citations': citation_counts[i]
                 })
+
+            # Append this batch of data to the CSV file
+            df = pd.DataFrame(all_data)
+            df.to_csv(csv_file_name, mode='a', header=False, index=False)
+
             sleep(3)
 
     # Convert all collected data to a DataFrame

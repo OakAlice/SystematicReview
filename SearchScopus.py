@@ -9,7 +9,7 @@ def QueryScopus(ScopusKey, search_strings, output_directory, Num_of_articles):
     from pyscopus import Scopus
     scopus = Scopus(ScopusKey)
 
-    def process_query(query, scopus, Scopus_num_of_articles):
+    def process_query(query, scopus, Num_of_articles):
         selected_columns = ['citation_count', 'title', 'year', 'authors', 'full_text']
 
         try:
