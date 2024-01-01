@@ -1,0 +1,6 @@
+pyscopus 
+elsapy
+semanticscholar
+pandas
+feedparser
+biopython
